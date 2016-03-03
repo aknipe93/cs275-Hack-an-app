@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private ListView list;
     private ArrayAdapter<String> listAdapter;
     private MainActivity self;
+    private Intent MapsIntent;
     private final String TAG = MainActivity.class.getSimpleName();
     public final static String EXTRA_MESSAGE = "com.example.alex.hack_a_app.DetailedHack.MESSAGE";
     /**
@@ -135,8 +136,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            Intent MapIntent = new Intent(self, MapsActivity.class);
-            startActivity(MapIntent);
+//            Intent MapsIntent = new Intent(self, MapsActivity.class);
+            startActivity(MapsIntent);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(List<String> result) {
 //            showDialog("Downloaded " + result + " bytes");
             final Hackathon[] hackArray = new Hackathon[result.size()];
-
+            final String[][] arr = new String[result.size()][];
             ArrayList<String> nameList = new ArrayList<String>();
             Log.d(TAG, "In post");
 
@@ -248,8 +249,17 @@ public class MainActivity extends AppCompatActivity
                 hackArray[i].URLHack = url;
                 hackArray[i].Location = parts[2];
                 hackArray[i].Date = parts[3];
+                String[] temp = {name,url,parts[2],parts[3]};
+                arr[i] = temp;
                 nameList.add(hackArray[i].name);
+
             }
+            MapsIntent = new Intent(self, MapsActivity.class);
+            Bundle mBundle = new Bundle();
+            mBundle.putSerializable("HackArray", arr);
+            MapsIntent.putExtras(mBundle);
+
+
             listAdapter = new ArrayAdapter<String>(self, R.layout.row, R.id.rowTextView, nameList);
             list.setAdapter(listAdapter);
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -258,6 +268,8 @@ public class MainActivity extends AppCompatActivity
                                         long id) {
                     Log.d(TAG, Integer.toString(position));
                     Intent intent = new Intent(self, DetailedHack.class);
+
+
 //                    Bundle b = new Bundle();
 //                    b.putParcelable(Constants.Hackathon, hackArray[position]);
                     String name = hackArray[position].name;
@@ -268,6 +280,7 @@ public class MainActivity extends AppCompatActivity
                     intent.putExtra("HackURL",  URLHack);
                     intent.putExtra("HackLocation",  Location);
                     intent.putExtra("HackDate",  Date);
+
                     startActivity(intent);
                 }
             });

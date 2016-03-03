@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
-    useLibrary 'org.apache.http.legacy'
+    //useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.example.alex.hack_a_app"

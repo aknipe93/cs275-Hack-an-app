@@ -1,5 +1,9 @@
 package com.example.alex.hack_a_app;
 
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,17 +15,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -54,9 +50,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        https://maps.googleapis.com/maps/api/geocode/json?address=santa+cruz&components=country:ES&key=YOUR_API_KEY
         // Add a marker in Sydney and move the camera
 //        getLatLong(getLocationInfo("Philadelphia, +PA"));
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        Intent intent = getIntent();
+//        Parcelable[] hackArray = intent.getParcelableArrayExtra("HackArray");
+
+        String[][] arrayReceived=null;
+        Object[] objectArray = (Object[]) getIntent().getExtras().getSerializable("HackArray");
+        if(objectArray!=null){
+            arrayReceived = new String[objectArray.length][];
+            for(int i=0;i<objectArray.length;i++){
+                arrayReceived[i]=(String[]) objectArray[i];
+            }
+        }
+
+        Geocoder gc = new Geocoder(this);
+        double lat = 0,lng = 0;
+        for (int i = 0;i<arrayReceived.length;i++){
+            if(gc.isPresent()){
+                List<Address> list = null;
+                try {
+                    list = gc.getFromLocationName(arrayReceived[i][2], 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Address address = list.get(0);
+
+                lat = address.getLatitude();
+                lng = address.getLongitude();
+            }
+
+            LatLng location = new LatLng(lat, lng);
+            mMap.addMarker(new MarkerOptions().position(location).title(arrayReceived[i][0]));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+
+        }
+
+
+
+
     }
 //    private static JSONObject getLocationInfo(String address)
 //    {
