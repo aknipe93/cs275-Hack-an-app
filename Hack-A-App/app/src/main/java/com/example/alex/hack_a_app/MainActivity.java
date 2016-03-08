@@ -1,5 +1,6 @@
 package com.example.alex.hack_a_app;
 
+import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import android.content.Intent;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayAdapter<String> listAdapter;
     private MainActivity self;
     private Intent MapsIntent;
+//    private ProgressBar spinner;
     private final String TAG = MainActivity.class.getSimpleName();
     public final static String EXTRA_MESSAGE = "com.example.alex.hack_a_app.DetailedHack.MESSAGE";
     /**
@@ -60,11 +63,17 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_place_white_36dp);
+
+//        spinner=(ProgressBar)findViewById(R.id.progressBar);
+//        spinner.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Building the map...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+//                spinner.setVisibility(View.VISIBLE);
+                startActivity(MapsIntent);
             }
         });
 
@@ -122,6 +131,11 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_about) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setMessage("Authors: Simon, Alex, Miguel, Kieran \nClass: CS 275 - 003\nDate: 3/8/16");
+            alertDialog.setTitle("About us");
+            alertDialog.show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -133,20 +147,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-//            Intent MapsIntent = new Intent(self, MapsActivity.class);
+        if (id == R.id.nav_gallery) {
             startActivity(MapsIntent);
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
