@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import android.content.Intent;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -65,14 +66,13 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_place_white_36dp);
 
-//        spinner=(ProgressBar)findViewById(R.id.progressBar);
-//        spinner.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Building the map...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-//                spinner.setVisibility(View.VISIBLE);
+//                Snackbar.make(view, "Building the map...", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Toast.makeText(getApplicationContext(), "Building the map...",
+                        Toast.LENGTH_LONG).show();
                 startActivity(MapsIntent);
             }
         });
@@ -271,9 +271,6 @@ public class MainActivity extends AppCompatActivity
                     Log.d(TAG, Integer.toString(position));
                     Intent intent = new Intent(self, DetailedHack.class);
 
-
-//                    Bundle b = new Bundle();
-//                    b.putParcelable(Constants.Hackathon, hackArray[position]);
                     String name = hackArray[position].name;
                     String URLHack = hackArray[position].URLHack;
                     String Location = hackArray[position].Location;

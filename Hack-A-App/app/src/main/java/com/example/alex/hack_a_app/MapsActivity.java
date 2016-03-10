@@ -1,6 +1,7 @@
 package com.example.alex.hack_a_app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Parcelable;
@@ -13,17 +14,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener{
 
     private GoogleMap mMap;
-
-
+    public String[][] arrayReceived=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +35,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
 
+
+    }
 
     /**
      * Manipulates the map once available.
@@ -47,14 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-//        https://maps.googleapis.com/maps/api/geocode/json?address=santa+cruz&components=country:ES&key=YOUR_API_KEY
-        // Add a marker in Sydney and move the camera
-//        getLatLong(getLocationInfo("Philadelphia, +PA"));
 
-        Intent intent = getIntent();
-//        Parcelable[] hackArray = intent.getParcelableArrayExtra("HackArray");
-
-        String[][] arrayReceived=null;
         Object[] objectArray = (Object[]) getIntent().getExtras().getSerializable("HackArray");
         if(objectArray!=null){
             arrayReceived = new String[objectArray.length][];
@@ -62,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 arrayReceived[i]=(String[]) objectArray[i];
             }
         }
+
 
         Geocoder gc = new Geocoder(this);
         double lat = 0,lng = 0;
@@ -83,74 +81,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             LatLng location = new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(location).title(arrayReceived[i][0]));
+//            mMap.setOnMarkerClickListener(this);
+
+            Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(arrayReceived[i][0]).snippet(arrayReceived[i][3]));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            marker.showInfoWindow();
+            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                @Override
+                public void onInfoWindowClick(Marker arg0) {
+                    // TODO Auto-generated method stub
+//
+                    String url = "",location = "",date = "";
+
+
+                    for (int i = 0;i<arrayReceived.length;i++){
+                        if (arg0.getTitle() == arrayReceived[i][0]){
+                            url = arrayReceived[i][1];
+                            location = arrayReceived[i][2];
+                            date = arrayReceived[i][3];
+                            break;
+                        }
+                    }
+                    Intent intent = new Intent(MapsActivity.this, DetailedHack.class);
+                    intent.putExtra("HackName",  arg0.getTitle());
+                    intent.putExtra("HackURL",  url);
+                    intent.putExtra("HackLocation", location);
+                    intent.putExtra("HackDate", date);
+                    startActivity(intent);
+                }
+            });
+
+
 
         }
 
-
-
-
     }
-//    private static JSONObject getLocationInfo(String address)
-//    {
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//        try {
-//
-//            address = address.replaceAll(" ","%20");
-//
-//            HttpPost httppost = new HttpPost("http://maps.google.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyBt4YXm6eVS10jiPFXqli94MRRcF7DGl3o");
-//            HttpClient client = new DefaultHttpClient();
-//            HttpResponse response;
-//            stringBuilder = new StringBuilder();
-//
-//
-//            response = client.execute(httppost);
-//            HttpEntity entity = response.getEntity();
-//            InputStream stream = entity.getContent();
-//            int b;
-//            while ((b = stream.read()) != -1) {
-//                stringBuilder.append((char) b);
-//            }
-//        } catch (IOException e) {
-//
-//            Log.i("getLocIOException", e.toString());
-//        }
-//
-//
-//        JSONObject jsonObject = new JSONObject();
-//        try {
-//            jsonObject = new JSONObject(stringBuilder.toString());
-//        } catch (JSONException e) {
-//            // TODO Auto-generated catch block
-//            Log.i("getLocJSONException", e.toString());
-//        }
-//
-//        return jsonObject;
-//    }
-//
-//    private static double[] getLatLong(JSONObject jsonObject)
-//    {
-//
-//        double longitute;
-//        double latitude;
-//        try {
-//
-//            longitute = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-//            Log.i("Log1", longitute+"");
-//            latitude = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-//            Log.i("lat1", latitude+"");
-//        } catch (JSONException e) {
-//
-//            longitute=0;
-//            latitude = 0;
-//            Log.i("getLatLong", e.toString());
-//
-//        }
-//        double[] latLong = new double[0];
-//        latLong[0]= longitute;
-//        latLong[1] =  latitude;
-//        return latLong;
-//    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
 }
