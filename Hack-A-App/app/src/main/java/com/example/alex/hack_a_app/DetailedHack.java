@@ -55,18 +55,17 @@ public class DetailedHack extends AppCompatActivity {
                 for (int i = 0; i < listOfFaves.size(); i++) {
 
                     if (listOfFaves.get(i).name.equals(name)) {
-                        Toast.makeText(getApplicationContext(), Integer.toString(db.getFavCount()),
-                                Toast.LENGTH_LONG).show();
                         db.delete_byID(listOfFaves.get(i).getId());
-                        Toast.makeText(getApplicationContext(), Integer.toString(db.getFavCount()),
-                                Toast.LENGTH_LONG).show();
                         flag = true;
                     }
                 }
                 if (flag == false) {
                     Toast.makeText(getApplicationContext(), "Added to Favorites",
                             Toast.LENGTH_LONG).show();
-                    db.addFav(new favDB( name, Date, Location, URLHack));
+                    if (db.getFavCount() == 0) {
+                        db.addFav(new favDB(name, Date, Location, URLHack));
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Removed from Favorites",
                             Toast.LENGTH_LONG).show();

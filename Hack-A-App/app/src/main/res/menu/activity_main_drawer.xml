@@ -8,7 +8,8 @@
             android:title="Map View" />
         <item
             android:id="@+id/nav_faves"
-            android:title="Favorites" />
+            android:title="Favorites"
+            android:icon="@drawable/ic_favorite_black_24dp"/>
 
     </group>
 

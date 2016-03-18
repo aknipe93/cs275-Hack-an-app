@@ -22,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper{
     // Contacts table name
     private static final String TABLE_FAV = "fav";
     // Shops Table Columns names
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_NAME = "name";
     private static final String KEY_DATE = "date";
     private static final String KEY_LOCATION = "location";
@@ -33,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_FAV + "(INTEGER PRIMARY KEY AUTOINCREMENT NOT NUL," + KEY_NAME + " TEXT, " +
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_FAV + "("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT, " +
                 KEY_DATE + " TEXT," + KEY_LOCATION + " TEXT, " +KEY_URLHACK + " TEXT " +")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
