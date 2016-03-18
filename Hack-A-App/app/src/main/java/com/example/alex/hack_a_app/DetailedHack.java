@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class DetailedHack extends AppCompatActivity {
 
@@ -22,21 +25,14 @@ public class DetailedHack extends AppCompatActivity {
         setContentView(R.layout.activity_detailed_hack);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final DetailedHack self = this;
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        String name = intent.getExtras().getString("HackName");
-        String Location = intent.getExtras().getString("HackLocation");
-        String Date = intent.getExtras().getString("HackDate");
-        String URLHack = intent.getExtras().getString("HackURL");
+        final String name = intent.getExtras().getString("HackName");
+        final String Location = intent.getExtras().getString("HackLocation");
+        final String Date = intent.getExtras().getString("HackDate");
+        final String URLHack = intent.getExtras().getString("HackURL");
         Log.d(TAG, name);
         Log.d(TAG, URLHack);
         TextView nt = new TextView(this);
@@ -48,7 +44,37 @@ public class DetailedHack extends AppCompatActivity {
         nt.setText(name);
         lt.setText(Location);
         dt.setText(Date);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DBHelper db = new DBHelper(self);
+                boolean flag = false;
+                List<favDB> listOfFaves = db.getAllFavs();
 
+                for (int i = 0; i < listOfFaves.size(); i++) {
+
+                    if (listOfFaves.get(i).name.equals(name)) {
+                        Toast.makeText(getApplicationContext(), Integer.toString(db.getFavCount()),
+                                Toast.LENGTH_LONG).show();
+                        db.delete_byID(listOfFaves.get(i).getId());
+                        Toast.makeText(getApplicationContext(), Integer.toString(db.getFavCount()),
+                                Toast.LENGTH_LONG).show();
+                        flag = true;
+                    }
+                }
+                if (flag == false) {
+                    Toast.makeText(getApplicationContext(), "Added to Favorites",
+                            Toast.LENGTH_LONG).show();
+                    db.addFav(new favDB( name, Date, Location, URLHack));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Removed from Favorites",
+                            Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
         WebView urlt = new WebView(this);
         urlt = (WebView) findViewById(R.id.webView);
         urlt.loadUrl(URLHack);

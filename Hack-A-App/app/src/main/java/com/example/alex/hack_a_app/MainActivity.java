@@ -129,9 +129,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_about) {
+//        if (id == R.id.action_settings) {
+//            Intent intent = new Intent(this, FavActivity.class);
+//            startActivity(intent);
+//        } else
+        if (id == R.id.action_about) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setMessage("Authors: Simon, Alex, Miguel, Kieran \nClass: CS 275 - 003\nDate: 3/8/16");
             alertDialog.setTitle("About us");
@@ -150,7 +152,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_gallery) {
             startActivity(MapsIntent);
         }
-
+        else if (id == R.id.nav_faves) {
+            Intent intent = new Intent(this, FavActivity.class);
+            startActivity(intent);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -253,7 +258,7 @@ public class MainActivity extends AppCompatActivity
                 hackArray[i].Date = parts[3];
                 String[] temp = {name,url,parts[2],parts[3]};
                 arr[i] = temp;
-                nameList.add(hackArray[i].name);
+                nameList.add(hackArray[i].name +"\t\t\t\t"+hackArray[i].Date);
 
             }
             MapsIntent = new Intent(self, MapsActivity.class);
